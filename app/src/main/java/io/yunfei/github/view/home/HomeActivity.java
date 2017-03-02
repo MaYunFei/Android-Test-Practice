@@ -4,13 +4,18 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import io.yunfei.github.R;
 import io.yunfei.github.base.BaseToolbarActivity;
+import io.yunfei.github.dagger.ComponentHolder;
+import javax.inject.Inject;
 
 /**
  * Created by yunfei on 2017/3/1.
  * email mayunfei6@gmail.com
  */
 
-public class HomeActivity extends BaseToolbarActivity {
+public class HomeActivity extends BaseToolbarActivity implements HomeView {
+
+  @Inject HomePresenter mHomePresenter;
+
   @Override protected int getLayoutId() {
     return R.layout.activity_home;
   }
@@ -18,5 +23,13 @@ public class HomeActivity extends BaseToolbarActivity {
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setTitle("Home");
+    ComponentHolder.getAppComponent().inject(this);
+    mHomePresenter.attachView(this);
+    mHomePresenter.getData();
+  }
+
+  @Override protected void onDestroy() {
+    super.onDestroy();
+    mHomePresenter.detachView();
   }
 }

@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import io.yunfei.github.R;
 import io.yunfei.github.base.BaseToolbarActivity;
 import io.yunfei.github.dagger.ComponentHolder;
+import io.yunfei.github.entity.DayEntity;
 import javax.inject.Inject;
 
 /**
@@ -31,5 +32,9 @@ public class HomeActivity extends BaseToolbarActivity implements HomeView {
   @Override protected void onDestroy() {
     super.onDestroy();
     mHomePresenter.detachView();
+  }
+
+  @Override public void showData(DayEntity dayEntity) {
+    
   }
 }

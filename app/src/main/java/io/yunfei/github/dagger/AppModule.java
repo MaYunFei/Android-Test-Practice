@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import dagger.Module;
 import dagger.Provides;
 import io.yunfei.github.network.GanKApiService;
+import io.yunfei.github.network.ParameInterceptor;
 import io.yunfei.github.view.home.HomePresenter;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Singleton;
@@ -36,17 +37,20 @@ import rx.schedulers.Schedulers;
   @Singleton @Provides public OkHttpClient provideOkHttpClient() {
     HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
     loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-    OkHttpClient okhttpClient =
-        new OkHttpClient.Builder().addInterceptor(loggingInterceptor).connectTimeout(30, TimeUnit.SECONDS).build();
+    OkHttpClient okhttpClient = new OkHttpClient.Builder().addInterceptor(new ParameInterceptor())
+        .addInterceptor(loggingInterceptor)
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .build();
+
     return okhttpClient;
   }
 
   @Singleton @Provides public Retrofit provideRetrofit(OkHttpClient okhttpClient) {
-    Retrofit retrofit =
-        new Retrofit.Builder().client(okhttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
-            .baseUrl("http://gank.io/api/").build();
+    Retrofit retrofit = new Retrofit.Builder().client(okhttpClient)
+        .addConverterFactory(GsonConverterFactory.create())
+        .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
+        .baseUrl("http://gank.io/api/")
+        .build();
     return retrofit;
   }
 

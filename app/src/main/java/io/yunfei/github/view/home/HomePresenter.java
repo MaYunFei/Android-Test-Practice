@@ -5,6 +5,7 @@ import io.yunfei.github.entity.DayEntity;
 import io.yunfei.github.network.BaseResponse;
 import io.yunfei.github.network.GanKApiService;
 import io.yunfei.github.network.RxUtils;
+import rx.Subscription;
 import rx.functions.Action1;
 
 /**
@@ -21,7 +22,7 @@ public class HomePresenter extends RxPresenter<HomeView> {
   }
 
   public void getData() {
-    mGanKApiService.getDayData()
+    Subscription subscribe = mGanKApiService.getDayData()
         .subscribeOn(RxUtils.io())
         .observeOn(RxUtils.main())
         .subscribe(new Action1<BaseResponse<DayEntity>>() {
@@ -33,5 +34,6 @@ public class HomePresenter extends RxPresenter<HomeView> {
 
           }
         });
+    addSuscription(subscribe);
   }
 }

@@ -1,6 +1,7 @@
 package io.yunfei.github.view.home;
 
 import io.yunfei.github.base.mvp.core.View;
+import io.yunfei.github.entity.DayEntity;
 
 /**
  * Created by yunfei on 2017/3/2.
@@ -8,4 +9,5 @@ import io.yunfei.github.base.mvp.core.View;
  */
 
 public interface HomeView extends View{
+  void showData(DayEntity dayEntity);
 }

@@ -12,13 +12,21 @@ import io.yunfei.github.dagger.DaggerAppComponent;
  */
 
 public class App extends Application {
+
+  private static App instance;
+
   @Override public void onCreate() {
     super.onCreate();
+    instance = this;
     initDagger();
   }
 
   private void initDagger() {
     AppComponent appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
     ComponentHolder.setAppComponent(appComponent);
+  }
+
+  public static App getInstance() {
+    return instance;
   }
 }

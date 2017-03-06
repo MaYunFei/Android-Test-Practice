@@ -1,14 +1,10 @@
 package io.yunfei.github.network;
 
-import android.content.Context;
-import io.yunfei.github.dagger.AppModule;
 import io.yunfei.github.entity.DayEntity;
 import io.yunfei.github.test.utils.RxUnitTestTools;
-import okhttp3.OkHttpClient;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
-import retrofit2.Retrofit;
 import rx.functions.Action1;
 
 /**
@@ -20,17 +16,19 @@ public class GanKApiServiceTest {
   private GanKApiService mGanKApiService;
 
   @Before public void setUp() throws Exception {
-    RxUnitTestTools.openRxTools();
-    Context context = Mockito.mock(Context.class);
+    RxUnitTestTools.setUpRxTools();
+    mGanKApiService = RetrofitTestTool.getTestRetrofit().create(GanKApiService.class);
+  }
 
-    AppModule appModule = new AppModule(context);
-    OkHttpClient okHttpClient = appModule.provideOkHttpClient();
-    Retrofit retrofit = appModule.provideRetrofit(okHttpClient);
-    mGanKApiService = appModule.provideGanKApiService(retrofit);
+  @After public void tearDown() throws Exception {
+
+
   }
 
   @Test public void getDayData() throws Exception {
     mGanKApiService.getDayData()
+        .subscribeOn(RxUtils.io())
+        .observeOn(RxUtils.main())
         .compose(ResponseUtils.<BaseResponse<DayEntity>, DayEntity>handleServerError())
         .subscribe(new Action1<DayEntity>() {
           @Override public void call(DayEntity dayEntity) {

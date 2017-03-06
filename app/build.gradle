@@ -13,9 +13,15 @@ android {
   }
   buildTypes {
     release {
+      buildConfigField "String", "TEST_URL", "\"http://gank.io/api/\""
       minifyEnabled false
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
+    debug {
+      buildConfigField "String", "TEST_URL", "\"http://gank.io/api/\""
+      minifyEnabled false
+    }
+
   }
 }
 
@@ -38,7 +44,7 @@ dependencies {
   compile 'com.orhanobut:logger:1.15'
 
   //CommonAdapter
-  //  compile "com.github.tianzhijiexian:CommonAdapter:$rootProject.CommonAdapter"
+    compile "com.github.tianzhijiexian:CommonAdapter:$rootProject.CommonAdapter"
 
   //rxjava
   compile "io.reactivex:rxandroid:$rootProject.rxandroidVersion"

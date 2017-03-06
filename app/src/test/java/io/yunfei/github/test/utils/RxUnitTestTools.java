@@ -18,7 +18,7 @@ public class RxUnitTestTools {
   /**
    * 把异步变成同步，方便测试
    */
-  public static void openRxTools() {
+  public static void setUpRxTools() {
     if (isInitRxTools) {
       return;
     }
@@ -31,6 +31,10 @@ public class RxUnitTestTools {
 
     RxJavaSchedulersHook rxJavaSchedulersHook = new RxJavaSchedulersHook() {
       @Override public Scheduler getIOScheduler() {
+        return Schedulers.immediate();
+      }
+
+      @Override public Scheduler getComputationScheduler() {
         return Schedulers.immediate();
       }
     };

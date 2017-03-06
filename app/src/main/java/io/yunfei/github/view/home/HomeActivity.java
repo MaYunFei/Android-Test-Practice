@@ -37,4 +37,9 @@ public class HomeActivity extends BaseToolbarActivity implements HomeView {
   @Override public void showData(DayEntity dayEntity) {
     
   }
+
+  @Override public void showError(Throwable throwable) {
+
+
+  }
 }

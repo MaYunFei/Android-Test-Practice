@@ -10,4 +10,5 @@ import io.yunfei.github.entity.DayEntity;
 
 public interface HomeView extends View{
   void showData(DayEntity dayEntity);
+  void showError(Throwable throwable);
 }

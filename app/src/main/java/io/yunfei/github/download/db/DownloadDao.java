@@ -48,6 +48,17 @@ public class DownloadDao {
   }
 
   /**
+   *  只更新bundle
+   * @param downloadBundle
+   * @return
+   */
+  public boolean updateDownLoadBundle(DownloadBundle downloadBundle){
+    SQLiteDatabase db = mHelper.getWritableDatabase();
+    return insertDownloadBundle(db,downloadBundle);
+  }
+
+
+  /**
    * 插入下载任务包
    */
   public boolean insertDownLoadBundle(DownloadBundle downloadBundle) {
@@ -112,6 +123,7 @@ public class DownloadDao {
     contentValues.put(ARG0, downloadBundle.getArg0());
     contentValues.put(ARG1, downloadBundle.getArg1());
     contentValues.put(STATUS, downloadBundle.getStatus());
+    contentValues.put(FILE_PATH, downloadBundle.getFilePath());
     long insert = db.insert(DownloadBundle.BUNDLE_TABLE_NAME, null, contentValues);
     Log.e(TAG, "insert bundle " + insert);
 

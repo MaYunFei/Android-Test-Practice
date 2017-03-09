@@ -3,14 +3,28 @@ package io.yunfei.github.download.manager;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 import io.yunfei.github.download.db.DownloadDao;
+import io.yunfei.github.download.utils.FileUtils;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.util.List;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by mayunfei on 17-3-9.
  */
 
 public class DownloadTask implements Runnable {
+
+  public DownloadTask(DownloadBundle downloadBundle) {
+    this.downloadBundle = downloadBundle;
+  }
 
   private OkHttpClient mClient;
 
@@ -56,6 +70,40 @@ public class DownloadTask implements Runnable {
 
 
   @Override public void run() {
+    InputStream inputStream = null;
+    BufferedInputStream bis = null;
+    RandomAccessFile tempFile = null;
+    String filePath = TextUtils.isEmpty(downloadBundle.getFilePath()) ? FileUtils.getDefaultFilePath() : downloadBundle.getFilePath();
+    List<TaskEntity> mTaskQueue = downloadBundle.getMTaskQueue();
+    downloadBundle.setStatus(io.yunfei.github.downloadmanager.download.TaskStatus.TASK_STATUS_CONNECTING);
+    //mDownloadDao.insertDownLoadBundle()
+    try {
+
+      for (TaskEntity mTaskEntity:mTaskQueue){
+        String fileName = TextUtils.isEmpty(mTaskEntity.getFileName()) ? FileUtils.getFileNameFromUrl(mTaskEntity.getUrl()) : mTaskEntity.getFileName();
+        mTaskEntity.setFileName(fileName);
+        mTaskEntity.setFilePath(filePath);
+        tempFile = new RandomAccessFile(new File(filePath, fileName), "rwd");
+
+        mTaskEntity.setTaskStatus(TaskStatus.TASK_STATUS_CONNECTING);
+        handler.sendEmptyMessage(TaskStatus.TASK_STATUS_CONNECTING);
+        //mDownloadDao.update(mTaskEntity);
+
+        long completedSize = mTaskEntity.getCompletedSize();
+        Request request = new Request.Builder().url(mTaskEntity.getUrl()).header("RANGE", "bytes=" + completedSize + "-").build();
+
+        //if (tempFile.length() == 0) {
+        //  completedSize = 0;
+        //}
+        //tempFile.seek(completedSize);
+        //
+        //Response response = mClient.newCall(request).execute();
+      }
+
+
+    }catch (FileNotFoundException e){
+
+    }
 
   }
 

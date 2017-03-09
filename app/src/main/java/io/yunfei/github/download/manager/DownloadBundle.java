@@ -16,6 +16,7 @@ import lombok.Data;
   public static final String ARG0 = "arg0";
   public static final String ARG1 = "arg1";
   public static final String STATUS = "status";
+  public static final String FILE_PATH = "filePath";
 
   /**
    * 不能是自增的id 因为会导致导入导出 出问题，为了能够将数据导出
@@ -27,6 +28,7 @@ import lombok.Data;
       + TITLE + " TEXT,"
       + UNIQUE_STRING + " TEXT,"
       + ARG0 +" TEXT,"
+      + FILE_PATH +" TEXT,"
       + STATUS + " INTEGER,"
       + ARG1 +" TEXT"
       + ");";
@@ -38,5 +40,6 @@ import lombok.Data;
   private String arg0;
   private String arg1;
   private int status;
+  private String filePath;
   private List<TaskEntity> mTaskQueue;
 }

@@ -5,6 +5,7 @@ import io.yunfei.github.dagger.AppComponent;
 import io.yunfei.github.dagger.AppModule;
 import io.yunfei.github.dagger.ComponentHolder;
 import io.yunfei.github.dagger.DaggerAppComponent;
+import io.yunfei.github.download.manager.DownloadManager;
 
 /**
  * Created by yunfei on 2017/3/2.
@@ -19,6 +20,11 @@ public class App extends Application {
     super.onCreate();
     instance = this;
     initDagger();
+    initDownloader();
+  }
+
+  private void initDownloader() {
+    DownloadManager.getInstance().init(this);
   }
 
   private void initDagger() {

@@ -2,12 +2,13 @@ package io.yunfei.github.download.manager;
 
 import java.util.List;
 import lombok.Data;
+import lombok.experimental.Builder;
 
 /**
  * Created by mayunfei on 17-3-9.
  */
 
-@Data public class DownloadBundle {
+@Data @Builder public class DownloadBundle {
 
   public static final String BUNDLE_TABLE_NAME = "bundles";
   public static final String BUNDLE_ID = "bundleId";
@@ -17,6 +18,8 @@ import lombok.Data;
   public static final String ARG1 = "arg1";
   public static final String STATUS = "status";
   public static final String FILE_PATH = "filePath";
+  public static final String TOTAL_SEIZE = "totalSize";
+  public static final String COMPLETED_SIZE = "completedSize";
 
   /**
    * 不能是自增的id 因为会导致导入导出 出问题，为了能够将数据导出
@@ -27,9 +30,11 @@ import lombok.Data;
       + BUNDLE_ID + " INTEGER PRIMARY KEY,"
       + TITLE + " TEXT,"
       + UNIQUE_STRING + " TEXT,"
-      + ARG0 +" TEXT,"
       + FILE_PATH +" TEXT,"
+      + TOTAL_SEIZE + " LONG,"
+      + COMPLETED_SIZE + " LONG,"
       + STATUS + " INTEGER,"
+      + ARG0 +" TEXT,"
       + ARG1 +" TEXT"
       + ");";
 
@@ -41,5 +46,9 @@ import lombok.Data;
   private String arg1;
   private int status;
   private String filePath;
+  private long totalSize;
+  private long completedSize;
   private List<TaskEntity> mTaskQueue;
+
+
 }

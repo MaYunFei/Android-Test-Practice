@@ -1,12 +1,13 @@
 package io.yunfei.github.download.manager;
 
 import lombok.Data;
+import lombok.experimental.Builder;
 
 /**
  * Created by mayunfei on 17-3-9.
  */
 
-@Data public class TaskEntity {
+@Data @Builder public class TaskEntity {
 
   public static final String TASK_TABLE_NAME = "item_status";
   public static final String TASK_ID = "taskId";

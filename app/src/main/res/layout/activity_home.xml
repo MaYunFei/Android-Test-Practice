@@ -9,4 +9,10 @@
     tools:context="io.yunfei.github.view.home.HomeActivity"
     >
   <include layout="@layout/include_toolbar"/>
+  <Button
+      android:id="@+id/btn_status"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/start"
+      />
 </LinearLayout>

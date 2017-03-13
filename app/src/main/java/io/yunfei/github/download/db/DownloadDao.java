@@ -54,8 +54,8 @@ public class DownloadDao {
   public boolean insertDownLoadBundle(DownloadBundle downloadBundle) {
     //不符合条件的数据
     if (downloadBundle == null
-        || downloadBundle.getMTaskQueue() == null
-        || downloadBundle.getMTaskQueue().size() < 0) {
+        || downloadBundle.getTaskQueue() == null
+        || downloadBundle.getTaskQueue().size() < 0) {
       return false;
     }
     SQLiteDatabase db = mHelper.getWritableDatabase();
@@ -68,7 +68,7 @@ public class DownloadDao {
       downloadBundle.setBundleId(maxId);
       insertDownloadBundle(db, downloadBundle);
       int maxTaskId = getMaxID(db, TASK_TABLE_NAME, TASK_ID);
-      for (TaskEntity taskEntity : downloadBundle.getMTaskQueue()) {
+      for (TaskEntity taskEntity : downloadBundle.getTaskQueue()) {
         taskEntity.setTaskId(maxTaskId);
         taskEntity.setBundleId(maxId);
         insertTaskEntity(db, taskEntity);
@@ -95,7 +95,7 @@ public class DownloadDao {
     if (cursor.moveToFirst()) {
       maxId = DBHelper.getInt(cursor, "maxId");
 
-      if (maxId > 0) {
+      if (maxId >= 0) {
         return maxId + 1;
       }
     }
@@ -207,7 +207,7 @@ public class DownloadDao {
             .completedSize(completedSize)
             .build();
 
-        bundle.setMTaskQueue(getTaskEntityListByBundleId(db, bundleId));
+        bundle.setTaskQueue(getTaskEntityListByBundleId(db, bundleId));
         return bundle;
       }
     } finally {

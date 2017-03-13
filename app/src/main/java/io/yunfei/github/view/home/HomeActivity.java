@@ -37,7 +37,10 @@ public class HomeActivity extends BaseToolbarActivity implements HomeView, Downl
   private static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 1;
   @Inject HomePresenter mHomePresenter;
   @BindView(R.id.btn_status) Button btnStatus;
+  @BindView(R.id.btn_2) Button btn2;
   private DownloadBundle downloadBundle;
+  private DownloadBundle m3u8Bundle;
+  private DownloadBundle testM3u8Bundle;
 
   @Override protected int getLayoutId() {
     return R.layout.activity_home;
@@ -56,17 +59,18 @@ public class HomeActivity extends BaseToolbarActivity implements HomeView, Downl
           new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE },
           MY_PERMISSIONS_REQUEST_CALL_PHONE);
     }
+    m3u8Bundle = getTestM3u8Bundle();
 
     downloadBundle = DownloadBundle.builder().title("title").unique_string("123").build();
 
     TaskEntity taskEntity = TaskEntity.builder()
         .taskStatus(TaskStatus.TASK_STATUS_INIT)
         .url(
-            "https://dl.last.fm/static/1489125033/131211148/2b99f533b7ea77fc3e11c78bcd3bfc94bbeeac92ca492ffe936a79b2b068092e/Death+Grips+-+Get+Got.mp3")
+            "http://s1.music.126.net/download/android/CloudMusic_2.8.1_official_4.apk")
         .build();
     TaskEntity taskEntity1 = TaskEntity.builder()
         .url(
-            "https://dl.last.fm/static/1489125033/131627927/c167a409f8cf18e6b097c09d3c563141e66b397dd0075ce32ebf705f29a8c445/Death+Grips+-+I%27ve+Seen+Footage.mp3")
+            "http://dl.m.cc.youku.com/android/phone/Youku_Phone_youkuweb.apk")
         .taskStatus(TaskStatus.TASK_STATUS_INIT)
         .build();
     TaskEntity taskEntity2 = TaskEntity.builder()
@@ -77,7 +81,7 @@ public class HomeActivity extends BaseToolbarActivity implements HomeView, Downl
     taskEntities.add(taskEntity);
     taskEntities.add(taskEntity1);
     taskEntities.add(taskEntity2);
-    downloadBundle.setMTaskQueue(taskEntities);
+    downloadBundle.setTaskQueue(taskEntities);
 
     btnStatus.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
@@ -87,7 +91,17 @@ public class HomeActivity extends BaseToolbarActivity implements HomeView, Downl
           task = new DownloadTask(downloadBundle);
         }
         task.setListener(HomeActivity.this);
+
         DownloadManager.getInstance().addTask(task);
+      }
+    });
+    btn2.setOnClickListener(new View.OnClickListener() {
+      @Override public void onClick(View v) {
+        DownloadTask task1 = DownloadManager.getInstance().getTask(m3u8Bundle.getUnique_string());
+        if (task1 == null) {
+          task1 = new DownloadTask(m3u8Bundle);
+        }
+        DownloadManager.getInstance().addTask(task1);
       }
     });
   }
@@ -181,5 +195,31 @@ public class HomeActivity extends BaseToolbarActivity implements HomeView, Downl
         DownloadManager.getInstance().addTask(downloadTask);
       }
     });
+  }
+
+  public DownloadBundle getTestM3u8Bundle() {
+    downloadBundle = DownloadBundle.builder().title("m3u8").unique_string("m3u8").build();
+
+    TaskEntity taskEntity = TaskEntity.builder()
+        .taskStatus(TaskStatus.TASK_STATUS_INIT)
+        .url(
+            "https://mv.dongaocloud.com/2b4f/2b51/d42/278/d704d5c7c226a371f8b34926f14330f0/d704d5c7c226a371f8b34926f14330f0-000.ts")
+        .build();
+    TaskEntity taskEntity1 = TaskEntity.builder()
+        .url(
+            "https://mv.dongaocloud.com/2b4f/2b51/d42/278/d704d5c7c226a371f8b34926f14330f0/d704d5c7c226a371f8b34926f14330f0-001.ts")
+        .taskStatus(TaskStatus.TASK_STATUS_INIT)
+        .build();
+    TaskEntity taskEntity2 = TaskEntity.builder()
+        .url(
+            "https://mv.dongaocloud.com/2b4f/2b51/d42/278/d704d5c7c226a371f8b34926f14330f0/d704d5c7c226a371f8b34926f14330f0-002.ts")
+        .taskStatus(TaskStatus.TASK_STATUS_INIT)
+        .build();
+    List<TaskEntity> taskEntities = new ArrayList<>();
+    taskEntities.add(taskEntity);
+    taskEntities.add(taskEntity1);
+    taskEntities.add(taskEntity2);
+    downloadBundle.setTaskQueue(taskEntities);
+    return downloadBundle;
   }
 }

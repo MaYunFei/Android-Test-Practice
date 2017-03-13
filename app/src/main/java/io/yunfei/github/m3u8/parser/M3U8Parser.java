@@ -46,7 +46,6 @@ public class M3U8Parser {
       final String m3UItemString = m3U8ItemScanner.next();
 
       final String[] m3U8ItemStringArray = m3UItemString.split(Constants.NEW_LINE_CHAR);
-
       track = new Track();
       extInfo = extInfoParser.parse(getExtInfLine(m3U8ItemStringArray));
       track.setExtInfo(extInfo);

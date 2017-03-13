@@ -1,5 +1,6 @@
 package io.yunfei.github.download.manager;
 
+import io.yunfei.github.download.parser.TaskParser;
 import java.util.List;
 import lombok.Data;
 import lombok.experimental.Builder;
@@ -48,7 +49,8 @@ import lombok.experimental.Builder;
   private String filePath;
   private long totalSize;
   private long completedSize;
-  private List<TaskEntity> mTaskQueue;
+  private List<TaskEntity> TaskQueue;
+  private List<TaskParser> TaskParsers;
 
 
 }

@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import io.yunfei.github.BuildConfig;
 import io.yunfei.github.download.db.DownloadDao;
+import io.yunfei.github.download.parser.TaskParser;
 import io.yunfei.github.download.utils.FileUtils;
 import io.yunfei.github.download.utils.IOUtils;
 import java.io.BufferedInputStream;
@@ -44,6 +45,7 @@ public class DownloadTask implements Runnable {
   private Handler handler = new Handler(Looper.getMainLooper()) {
     @Override public void handleMessage(Message msg) {
       int code = msg.what;
+      if (mListener == null) return;
       switch (code) {
         case TaskStatus.TASK_STATUS_QUEUE:
           mListener.onQueue(DownloadTask.this);
@@ -74,10 +76,27 @@ public class DownloadTask implements Runnable {
   };
 
   @Override public void run() {
+
+    if (mDownloadBundle.getTotalSize() <= 0) {
+      try {
+
+        for (TaskParser taskParser : mDownloadBundle.getTaskParsers()) {
+          taskParser.setOkHttpClient(mClient);
+          taskParser.parse();
+          List<TaskEntity> taskList = taskParser.getTaskList();
+          mDownloadBundle.getTaskQueue().addAll(taskList);
+        }
+
+        mDownloadBundle.setTotalSize(mDownloadBundle.getTaskQueue().size());
+      } catch (Throwable throwable) {
+        throwable.printStackTrace();
+      }
+    }
+
     String filePath =
         TextUtils.isEmpty(mDownloadBundle.getFilePath()) ? FileUtils.getDefaultFilePath()
             : mDownloadBundle.getFilePath();
-    List<TaskEntity> mTaskQueue = mDownloadBundle.getMTaskQueue();
+    List<TaskEntity> mTaskQueue = mDownloadBundle.getTaskQueue();
 
     if (mTaskQueue.size() <= 0) {
       //TODO 参数错误抛到外部
@@ -96,12 +115,8 @@ public class DownloadTask implements Runnable {
     handler.sendEmptyMessage(TaskStatus.TASK_STATUS_CONNECTING);
     mDownloadDao.updateDownLoadBundle(mDownloadBundle);
     long totalSize = mDownloadBundle.getTotalSize();
-    if (totalSize <= 0) {
-      totalSize = mTaskQueue.size();
-      mDownloadBundle.setTotalSize(totalSize);
-    }
 
-    long index = mDownloadBundle.getCompletedSize() ;
+    long index = mDownloadBundle.getCompletedSize();
 
     for (int i = (int) index; i < totalSize; i++) {
       TaskEntity mTaskEntity = mTaskQueue.get(i);
@@ -179,7 +194,7 @@ public class DownloadTask implements Runnable {
 
             if (mDownloadBundle.getStatus() == TaskStatus.TASK_STATUS_CANCEL
                 || mDownloadBundle.getStatus() == TaskStatus.TASK_STATUS_PAUSE) {
-              Log.e(TAG,"PAUSE OR CANCEL");
+              Log.e(TAG, "PAUSE OR CANCEL");
               break;
             }
           }

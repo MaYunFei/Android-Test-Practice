@@ -60,4 +60,14 @@ public class ExtInfo {
   public void setTitle(String title) {
     this.title = title;
   }
+
+  @Override public String toString() {
+    return "duration = "+duration + "\n"
+        +"tvgId = "+tvgId + "\n"
+        +"tvgName = "+tvgName + "\n"
+        +"tvgLogoUrl = "+tvgLogoUrl + "\n"
+        +"groupTitle = "+groupTitle + "\n"
+        +"title = "+title + "\n"
+        ;
+  }
 }

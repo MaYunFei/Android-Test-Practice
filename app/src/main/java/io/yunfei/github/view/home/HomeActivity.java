@@ -20,6 +20,9 @@ import io.yunfei.github.download.manager.DownloadTask;
 import io.yunfei.github.download.manager.DownloadTaskListener;
 import io.yunfei.github.download.manager.TaskEntity;
 import io.yunfei.github.download.manager.TaskStatus;
+import io.yunfei.github.download.parser.HtmlTaskParser;
+import io.yunfei.github.download.parser.M3U8TaskParser;
+import io.yunfei.github.download.parser.TaskParser;
 import io.yunfei.github.entity.DayEntity;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,28 +63,13 @@ public class HomeActivity extends BaseToolbarActivity implements HomeView, Downl
           MY_PERMISSIONS_REQUEST_CALL_PHONE);
     }
     m3u8Bundle = getTestM3u8Bundle();
+    List<TaskParser> taskParsers = new ArrayList<>();
+    M3U8TaskParser m3U8TaskParser = new M3U8TaskParser("https://md.dongaocloud.com/2b4f/2b52/ff6/895/5ac9049db0f98f243b19bb6edba94110/video.m3u8");
+    HtmlTaskParser htmlTaskParser = new HtmlTaskParser("https://joyrun.github.io/2016/07/19/AptHelloWorld/");
+    taskParsers.add(m3U8TaskParser);
+    taskParsers.add(htmlTaskParser);
 
-    downloadBundle = DownloadBundle.builder().title("title").unique_string("123").build();
-
-    TaskEntity taskEntity = TaskEntity.builder()
-        .taskStatus(TaskStatus.TASK_STATUS_INIT)
-        .url(
-            "http://s1.music.126.net/download/android/CloudMusic_2.8.1_official_4.apk")
-        .build();
-    TaskEntity taskEntity1 = TaskEntity.builder()
-        .url(
-            "http://dl.m.cc.youku.com/android/phone/Youku_Phone_youkuweb.apk")
-        .taskStatus(TaskStatus.TASK_STATUS_INIT)
-        .build();
-    TaskEntity taskEntity2 = TaskEntity.builder()
-        .url("http://img.wdjimg.com/mms/icon/v1/7/08/2b3858e31efdee8a7f28b06bdb83a087_512_512.png")
-        .taskStatus(TaskStatus.TASK_STATUS_INIT)
-        .build();
-    List<TaskEntity> taskEntities = new ArrayList<>();
-    taskEntities.add(taskEntity);
-    taskEntities.add(taskEntity1);
-    taskEntities.add(taskEntity2);
-    downloadBundle.setTaskQueue(taskEntities);
+    downloadBundle = DownloadBundle.builder().title("title").unique_string("123").TaskParsers(taskParsers).build();
 
     btnStatus.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {

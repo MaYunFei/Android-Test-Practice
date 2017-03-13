@@ -51,7 +51,7 @@ public class M3U8TaskParser implements TaskParser {
           String videoUrl = item[1];
           if (!videoUrl.toLowerCase().contains("http://") || !videoUrl.toLowerCase()
               .contains("https://")) {
-            videoUrl = url.substring(url.lastIndexOf("/") + 1) + videoUrl;
+            videoUrl = url.substring(0,url.lastIndexOf("/") + 1) + videoUrl;
           }
           TaskEntity taskEntity = TaskEntity.builder().url(videoUrl).build();
           taskEntities.add(taskEntity);

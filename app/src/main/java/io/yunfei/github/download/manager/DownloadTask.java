@@ -16,6 +16,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.List;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -76,22 +77,38 @@ public class DownloadTask implements Runnable {
   };
 
   @Override public void run() {
+    DownloadBundle downloadBundle =
+        mDownloadDao.queryDownLoadBundle(mDownloadBundle.getUnique_string());
 
-    if (mDownloadBundle.getTotalSize() <= 0) {
+    //分析任务
+    if (downloadBundle == null
+        && mDownloadBundle.getTaskParsers().size() > 0
+        && mDownloadBundle.getTotalSize() <= 0) {
       try {
 
         for (TaskParser taskParser : mDownloadBundle.getTaskParsers()) {
           taskParser.setOkHttpClient(mClient);
+          //更新状态 更新数据库
+          mDownloadBundle.setStatus(TaskStatus.TASK_STATUS_CONNECTING);
+          handler.sendEmptyMessage(TaskStatus.TASK_STATUS_CONNECTING);
           taskParser.parse();
           List<TaskEntity> taskList = taskParser.getTaskList();
+
+          if (mDownloadBundle.getTaskQueue() == null){
+            mDownloadBundle.setTaskQueue(new ArrayList<TaskEntity>());
+          }
           mDownloadBundle.getTaskQueue().addAll(taskList);
         }
 
         mDownloadBundle.setTotalSize(mDownloadBundle.getTaskQueue().size());
       } catch (Throwable throwable) {
-        throwable.printStackTrace();
+        mDownloadBundle.setStatus(TaskStatus.TASK_STATUS_STORAGE_ERROR);
+        handler.sendEmptyMessage(TaskStatus.TASK_STATUS_STORAGE_ERROR);
+        return;
+        //throwable.printStackTrace();
       }
     }
+
 
     String filePath =
         TextUtils.isEmpty(mDownloadBundle.getFilePath()) ? FileUtils.getDefaultFilePath()
@@ -104,16 +121,17 @@ public class DownloadTask implements Runnable {
         Log.e(TAG, "参数异常");
       }
     }
-    DownloadBundle downloadBundle =
-        mDownloadDao.queryDownLoadBundle(mDownloadBundle.getUnique_string());
-    if (downloadBundle == null) {
-      //插入数据库
-      mDownloadDao.insertDownLoadBundle(mDownloadBundle);
-    }
+
     //更新状态 更新数据库
     mDownloadBundle.setStatus(TaskStatus.TASK_STATUS_CONNECTING);
     handler.sendEmptyMessage(TaskStatus.TASK_STATUS_CONNECTING);
     mDownloadDao.updateDownLoadBundle(mDownloadBundle);
+
+    if (downloadBundle == null) {
+      //插入数据库
+      mDownloadDao.insertDownLoadBundle(mDownloadBundle);
+    }
+
     long totalSize = mDownloadBundle.getTotalSize();
 
     long index = mDownloadBundle.getCompletedSize();

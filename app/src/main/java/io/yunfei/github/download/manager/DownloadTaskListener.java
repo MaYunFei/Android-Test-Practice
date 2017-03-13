@@ -1,6 +1,5 @@
 package io.yunfei.github.download.manager;
 
-import io.yunfei.github.downloadmanager.download.*;
 
 /**
  * Created by mayunfei on 17-3-9.

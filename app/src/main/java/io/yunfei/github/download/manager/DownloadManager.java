@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import io.yunfei.github.download.db.DownloadDao;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -113,7 +114,6 @@ public class DownloadManager {
       if (!mQueue.contains(task)) {
         mExecutor.execute(task);
       }
-
       if (mExecutor.getTaskCount() > mThreadCount) {
         task.queue();
       }
@@ -148,4 +148,44 @@ public class DownloadManager {
   public void resumeTask(@NonNull DownloadTask downloadTask) {
     addTask(downloadTask);
   }
+
+  public void cancelTask(@NonNull DownloadTask downloadTask) {
+    DownloadBundle downloadBundle = downloadTask.getDownloadBundle();
+    if (downloadBundle != null) {
+      if (downloadBundle.getStatus() == TaskStatus.TASK_STATUS_DOWNLOADING) {
+        pauseTask(downloadTask);
+        mExecutor.remove(downloadTask);
+      }
+
+      if (mQueue.contains(downloadTask)) {
+        mQueue.remove(downloadTask);
+      }
+      mCurrentTaskList.remove(downloadBundle.getUnique_string());
+      downloadTask.cancel();
+      //TODO 删除文件夹
+    }
+  }
+
+  public void startAll() {
+    if (mCurrentTaskList.size() < 0) {
+
+    } else {
+      for (DownloadTask downloadTask : mCurrentTaskList.values()) {
+        addTask(downloadTask);
+      }
+    }
+  }
+
+  public void pauseAll() {
+    if (mCurrentTaskList.size() > 0) {
+      for (DownloadTask downloadTask : mCurrentTaskList.values()) {
+        pauseTask(downloadTask);
+      }
+    }
+  }
+
+
+
+
+
 }

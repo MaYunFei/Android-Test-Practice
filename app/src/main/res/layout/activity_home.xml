@@ -21,4 +21,29 @@
       android:layout_height="wrap_content"
       android:text="@string/start"
       />
+  <Button
+      android:id="@+id/btn_3"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/start"
+      />
+  <Button
+      android:id="@+id/btn_4"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/start"
+      />
+  <Button
+      android:id="@+id/btn_start_all"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="startAll"
+      />
+
+  <Button
+      android:id="@+id/btn_pause_all"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="pauseAll"
+      />
 </LinearLayout>

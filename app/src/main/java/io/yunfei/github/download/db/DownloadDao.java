@@ -10,6 +10,9 @@ import io.yunfei.github.download.manager.DownloadBundle;
 import io.yunfei.github.download.manager.TaskEntity;
 import java.util.ArrayList;
 import java.util.List;
+import rx.Observable;
+import rx.Subscriber;
+import rx.schedulers.Schedulers;
 
 import static io.yunfei.github.download.manager.DownloadBundle.*;
 import static io.yunfei.github.download.manager.TaskEntity.TASK_ID;
@@ -27,6 +30,10 @@ public class DownloadDao {
   public DownloadDao(Context context) {
     mHelper = new SQLiteHelper(context);
     isDebug = BuildConfig.DEBUG;
+  }
+
+  public Observable<Boolean> isExistDownLoadBundleIo(final String unique_string) {
+    return Observable.just(isExistDownLoadBundle(unique_string)).subscribeOn(Schedulers.io());
   }
 
   //TODO 判断数据库中是否存在 Bundle
@@ -259,4 +266,15 @@ public class DownloadDao {
 
     return entityList;
   }
+
+  public void delete(DownloadBundle downloadBundle) {
+    SQLiteDatabase db = mHelper.getWritableDatabase();
+    db.delete(TaskEntity.TASK_TABLE_NAME, TaskEntity.BUNDLE_ID + "=?",
+        new String[] { downloadBundle.getBundleId() + "" });
+    db.delete(DownloadBundle.BUNDLE_TABLE_NAME, DownloadBundle.UNIQUE_STRING + " = ?",
+        new String[] { downloadBundle.getUnique_string() });
+    db.close();
+  }
+
+
 }

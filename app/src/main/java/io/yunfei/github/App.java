@@ -24,7 +24,7 @@ public class App extends Application {
   }
 
   private void initDownloader() {
-    DownloadManager.getInstance().init(this,2);
+    DownloadManager.getInstance().init(this,15);
   }
 
   private void initDagger() {

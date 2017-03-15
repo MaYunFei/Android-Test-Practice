@@ -181,15 +181,14 @@ public class DownloadTask implements Runnable {
         //开始下载
         mTaskEntity.setTaskStatus(TaskStatus.TASK_STATUS_CONNECTING);
         mDownloadDao.updateTaskEntity(mTaskEntity);
-
         long completedSize = mTaskEntity.getCompletedSize();
+        if (tempFile.length() == 0) {
+          completedSize = 0;
+        }
         Request request = new Request.Builder().url(mTaskEntity.getUrl())
             .header("RANGE", "bytes=" + completedSize + "-")
             .build();
 
-        if (tempFile.length() == 0) {
-          completedSize = 0;
-        }
 
         tempFile.seek(completedSize);
         Response response = mClient.newCall(request).execute();
